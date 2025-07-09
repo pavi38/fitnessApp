@@ -12,6 +12,7 @@ import com.example.fitnessappc.pages.LoginPage
 import com.example.fitnessappc.pages.Me
 import com.example.fitnessappc.pages.Signup
 import com.example.fitnessappc.model.UserProfile
+import com.example.fitnessappc.pages.AddPage
 
 @Composable
 fun LoginNavigation(navController: NavHostController, modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
@@ -24,13 +25,15 @@ fun LoginNavigation(navController: NavHostController, modifier: Modifier = Modif
         composable("signup"){
             Signup(modifier,navController,authViewModel)
         }
-        composable("me", arguments = listOf(
-            navArgument("user"){
-                type = NavType.ParcelableType(UserProfile::class.java)
-                nullable = false
-            }
-        )){ entry ->
-            Me(modifier,navController,authViewModel, entry.arguments?.getParcelable("user"))
+        composable("add"){
+            AddPage(modifier)
+        }
+        composable("me"){ entry ->
+            val userProfile = navController
+                .previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<UserProfile>("user")
+            Me(modifier, navController, authViewModel, userProfile)
         }
 
     })

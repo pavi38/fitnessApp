@@ -28,7 +28,6 @@ class AuthViewModel : ViewModel() {
             _authState.value = AuthState.Unauthenticated
         }else{
             fetchUserProfile()
-            println(auth.currentUser?.email)
         }
     }
 
@@ -90,28 +89,20 @@ class AuthViewModel : ViewModel() {
 
     fun fetchUserProfile(){
         val currentUserId = auth.currentUser?.uid
-        println(currentUserId)
         if(currentUserId==null){
             _authState.value = AuthState.Error("User not authenticated")
             return
         }
-        println("hi")
         firestore.collection("users")
             .document(currentUserId)
             .get()
-            .addOnCompleteListener { task ->
-                println("hi3")
-            }
             .addOnSuccessListener { snapshot ->
-                println(snapshot.exists())
                 if (snapshot.exists()) {
                     // Map the document into your UserProfile class
                     val userProfile = snapshot.toObject(UserProfile::class.java)
                     if (userProfile != null) {
-                        println("hi2")
                         _authState.value = AuthState.Authenticated(userProfile)
                     } else {
-                        println("failed")
                         _authState.value = AuthState.Error("Failed to parse user profile")
                     }
                 } else {
@@ -119,10 +110,8 @@ class AuthViewModel : ViewModel() {
                 }
             }
             .addOnFailureListener { e ->
-                println("failed")
                 _authState.value = AuthState.Error(e.message ?: "Error fetching profile")
             }
-        println("hi5")
     }
 
     fun signout(){

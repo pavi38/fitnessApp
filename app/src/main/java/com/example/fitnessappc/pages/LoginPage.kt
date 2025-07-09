@@ -47,10 +47,9 @@ fun LoginPage(modifier: Modifier = Modifier,navController: NavController,authVie
         when(authState.value){
             is AuthState.Authenticated -> {
                 val userProfile = (authState.value as AuthState.Authenticated).userProfile
-                println(userProfile.height)
                 navController.currentBackStackEntry
-                    ?.arguments
-                    ?.putParcelable("user", userProfile)
+                    ?.savedStateHandle
+                    ?.set("user", userProfile)
                 navController.navigate("me")
             }
             is AuthState.Error -> Toast.makeText(context,

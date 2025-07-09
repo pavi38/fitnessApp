@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getString
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.fitnessappc.navigation.LoginNavigation
@@ -76,7 +77,7 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         bottomBar = {
                             if (currentRoute != "login" && currentRoute != "signup") {
-                                BottomBar()
+                                BottomBar(navController = navController)
                             }
                         }
                     ){ innerPadding ->
@@ -90,7 +91,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun BottomBar(modifier: Modifier = Modifier) {
+fun BottomBar(modifier: Modifier = Modifier, navController: NavController) {
     val context = LocalContext.current
     val items = listOf(
         BottomNavigationItem(
@@ -110,7 +111,7 @@ fun BottomBar(modifier: Modifier = Modifier) {
         )
     )
     var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
+        mutableStateOf(1)
     }
     NavigationBar{
         items.forEachIndexed { index, item ->
@@ -119,7 +120,7 @@ fun BottomBar(modifier: Modifier = Modifier) {
                 selected = selectedItemIndex == index,
                 onClick = {
                     selectedItemIndex = index
-                    // navController.navigate(item.title)
+                    navController.navigate(item.title)
                 },
                 label = {
                     Text(text = item.title)
